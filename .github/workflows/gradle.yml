@@ -16,6 +16,8 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew setup build
       
-    - name: gitPush
+    - name: gitCommit
       run: git commit -A . thisIsAnTest
+      
+    - name: gitPush
       run: git push
