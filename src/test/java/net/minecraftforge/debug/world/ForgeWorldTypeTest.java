@@ -1,15 +1,9 @@
 package net.minecraftforge.debug.world;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.BiomeGeneratorTypeScreens;
-import net.minecraft.client.gui.screen.CreateWorldScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 import net.minecraftforge.client.ForgeWorldTypeScreens;
 import net.minecraftforge.common.world.ForgeWorldType;
