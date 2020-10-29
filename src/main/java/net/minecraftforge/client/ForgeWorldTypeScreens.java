@@ -16,27 +16,41 @@ import java.util.Optional;
 
 public class ForgeWorldTypeScreens
 {
-    private static final Map<ForgeWorldType, BiomeGeneratorTypeScreens.IFactory> WORLD_TYPE_SCREEN_FACTORIES = Maps.newHashMap();
+    private static final Map<ForgeWorldType, BiomeGeneratorTypeScreens> GENERATORS = Maps.newHashMap();
+    private static final Map<ForgeWorldType, BiomeGeneratorTypeScreens.IFactory> GENERATOR_SCREEN_FACTORIES = Maps.newHashMap();
 
     public static synchronized void registerFactory(ForgeWorldType type, BiomeGeneratorTypeScreens.IFactory factory)
     {
-        if (WORLD_TYPE_SCREEN_FACTORIES.containsKey(type))
+        if (GENERATOR_SCREEN_FACTORIES.containsKey(type))
             throw new IllegalStateException("Factory has already been registered for: " + type);
 
-        WORLD_TYPE_SCREEN_FACTORIES.put(type, factory);
+        GENERATOR_SCREEN_FACTORIES.put(type, factory);
     }
 
-    static BiomeGeneratorTypeScreens.IFactory getBiomeGeneratorTypeScreenFactory(Optional<BiomeGeneratorTypeScreens> generator, @Nullable BiomeGeneratorTypeScreens.IFactory biomegeneratortypescreens$ifactory)
+    static BiomeGeneratorTypeScreens getDefaultGenerator()
     {
-        return generator.filter(gen -> gen instanceof GeneratorType).map(type -> {
-            GeneratorType forge = ((GeneratorType)type);
-            return WORLD_TYPE_SCREEN_FACTORIES.get(forge.getWorldType());
-        }).orElse(biomegeneratortypescreens$ifactory);
+        ForgeWorldType def = ForgeWorldType.getDefaultWorldType();
+
+        BiomeGeneratorTypeScreens gen = null;
+        if (def != null)
+            gen = GENERATORS.get(def);
+        return gen != null ? gen : BiomeGeneratorTypeScreens.field_239066_a_;
+    }
+
+    static BiomeGeneratorTypeScreens.IFactory getGeneratorScreenFactory(Optional<BiomeGeneratorTypeScreens> generator, @Nullable BiomeGeneratorTypeScreens.IFactory biomegeneratortypescreens$ifactory)
+    {
+        return generator.filter(gen -> gen instanceof GeneratorType)
+                .map(type -> GENERATOR_SCREEN_FACTORIES.get(((GeneratorType)type).getWorldType()))
+                .orElse(biomegeneratortypescreens$ifactory);
     }
 
     static void registerTypes()
     {
-        ForgeRegistries.WORLD_TYPES.forEach(wt -> BiomeGeneratorTypeScreens.registerGenerator(new GeneratorType(wt)));
+        ForgeRegistries.WORLD_TYPES.forEach(wt -> {
+            GeneratorType gen = new GeneratorType(wt);
+            GENERATORS.put(wt, gen);
+            BiomeGeneratorTypeScreens.registerGenerator(gen);
+        });
     }
 
     private static class GeneratorType extends BiomeGeneratorTypeScreens

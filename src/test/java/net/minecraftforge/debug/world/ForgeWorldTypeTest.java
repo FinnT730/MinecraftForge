@@ -10,16 +10,21 @@ import net.minecraftforge.common.world.ForgeWorldType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ObjectHolder;
 
 @Mod("forge_world_type_test")
 public class ForgeWorldTypeTest
 {
+    @ObjectHolder("forge_world_type_test:test_world_type")
+    public static ForgeWorldType testWorldType;
+
     public ForgeWorldTypeTest()
     {
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(ForgeWorldType.class, this::registerWorldTypes);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerWorldTypeScreenFactories);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
     }
 
     private void registerWorldTypes(RegistryEvent.Register<ForgeWorldType> event)
@@ -29,8 +34,10 @@ public class ForgeWorldTypeTest
         );
     }
 
-    @ObjectHolder("forge_world_type_test:test_world_type")
-    public static ForgeWorldType testWorldType;
+    private void commonSetup(FMLCommonSetupEvent event)
+    {
+        ForgeWorldType.setDefaultWorldType(testWorldType);
+    }
 
     private void registerWorldTypeScreenFactories(FMLClientSetupEvent event)
     {

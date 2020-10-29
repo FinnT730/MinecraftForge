@@ -8,9 +8,32 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
 
 public class ForgeWorldType extends ForgeRegistryEntry<ForgeWorldType>
 {
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static ForgeWorldType defaultWorldType = null; // If null, the default vanilla world type "default" will be used.
+
+    public static void setDefaultWorldType(ForgeWorldType wt)
+    {
+        if (defaultWorldType != null)
+        {
+            LOGGER.warn("Default world type was already set, was '{}', is now '{}'", defaultWorldType.getRegistryName(), wt.getRegistryName());
+        }
+        defaultWorldType = wt;
+    }
+
+    @Nullable
+    public static ForgeWorldType getDefaultWorldType()
+    {
+        return defaultWorldType;
+    }
+
     private final ISettingsChunkGeneratorFactory factory;
 
     public ForgeWorldType(ISettingsChunkGeneratorFactory factory)
@@ -45,11 +68,11 @@ public class ForgeWorldType extends ForgeRegistryEntry<ForgeWorldType>
 
     public interface ISettingsChunkGeneratorFactory
     {
-        public abstract ChunkGenerator createChunkGenerator(Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimensionSettingsRegistry, long seed, String generatorSettings);
+        ChunkGenerator createChunkGenerator(Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimensionSettingsRegistry, long seed, String generatorSettings);
     }
 
     public interface IBasicChunkGeneratorFactory
     {
-        public abstract ChunkGenerator createChunkGenerator(Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimensionSettingsRegistry, long seed);
+        ChunkGenerator createChunkGenerator(Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimensionSettingsRegistry, long seed);
     }
 }

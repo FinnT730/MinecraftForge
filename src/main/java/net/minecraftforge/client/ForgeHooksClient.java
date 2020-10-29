@@ -77,6 +77,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -780,11 +781,21 @@ public class ForgeHooksClient
 
     public static BiomeGeneratorTypeScreens.IFactory getBiomeGeneratorTypeScreenFactory(Optional<BiomeGeneratorTypeScreens> generator, @Nullable BiomeGeneratorTypeScreens.IFactory biomegeneratortypescreens$ifactory)
     {
-        return ForgeWorldTypeScreens.getBiomeGeneratorTypeScreenFactory(generator, biomegeneratortypescreens$ifactory);
+        return ForgeWorldTypeScreens.getGeneratorScreenFactory(generator, biomegeneratortypescreens$ifactory);
     }
 
     public static boolean hasBiomeGeneratorSettingsOptionsScreen(Optional<BiomeGeneratorTypeScreens> generator)
     {
         return getBiomeGeneratorTypeScreenFactory(generator, null) != null;
+    }
+
+    public static Optional<BiomeGeneratorTypeScreens> getWorldTypeFromGenerator(DimensionGeneratorSettings dimensionGeneratorSettings)
+    {
+        return BiomeGeneratorTypeScreens.func_239079_a_(dimensionGeneratorSettings);
+    }
+
+    public static Optional<BiomeGeneratorTypeScreens> getDefaultWorldType()
+    {
+        return Optional.of(ForgeWorldTypeScreens.getDefaultGenerator());
     }
 }
