@@ -20,6 +20,7 @@
 package net.minecraftforge.client;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.MainWindow;
@@ -30,6 +31,7 @@ import net.minecraft.client.audio.SoundEngine;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.ClientBossInfo;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.BiomeGeneratorTypeScreens;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
@@ -71,11 +73,15 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -83,6 +89,7 @@ import net.minecraftforge.client.model.animation.Animation;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.model.TransformationHelper;
+import net.minecraftforge.common.world.ForgeWorldType;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.VersionChecker;
@@ -100,12 +107,14 @@ import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.lwjgl.opengl.GL13;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -768,5 +777,20 @@ public class ForgeHooksClient
             }
         }
         return !(squareDistance > 4096.0f);
+    }
+
+    public static void registerForgeWorldTypeScreens()
+    {
+        ForgeWorldTypeScreens.registerTypes();
+    }
+
+    public static BiomeGeneratorTypeScreens.IFactory getBiomeGeneratorTypeScreenFactory(Optional<BiomeGeneratorTypeScreens> generator, @Nullable BiomeGeneratorTypeScreens.IFactory biomegeneratortypescreens$ifactory)
+    {
+        return ForgeWorldTypeScreens.getBiomeGeneratorTypeScreenFactory(generator, biomegeneratortypescreens$ifactory);
+    }
+
+    public static boolean hasBiomeGeneratorSettingsOptionsScreen(Optional<BiomeGeneratorTypeScreens> generator)
+    {
+        return getBiomeGeneratorTypeScreenFactory(generator, null) != null;
     }
 }
